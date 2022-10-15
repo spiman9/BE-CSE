@@ -1,0 +1,79 @@
+														TERMWORK 1
+
+Team
+CREATE TABLE TEAM
+(
+	NAME VARCHAR(20),
+	CITY VARCHAR(20),
+	COACH VARCHAR(20) NOT NULL,
+	CID INT,
+	PRIMARY KEY(NAME)
+);
+
+INSERT INTO TEAM VALUES('FLYING ELBOWS' , 'HARYANA' , 'SOMMAYYA' , NULL);
++---------------+---------+----------+------+
+| NAME          | CITY    | COACH    | PID  |
++---------------+---------+----------+------+
+| BLOWERS       | AP      | NARAYAN  | NULL |
+| FLYING ELBOWS | HARYANA | SOMMAYYA | NULL |
+| HITTERS       | TN      | SWAMY    | NULL |
+| RANGERS       | BIHAR   | VINOD    | NULL |
+| STARS         | UP      | AMRIT    | NULL |
++---------------+---------+----------+------+
+
+Player
+CREATE TABLE PLAYER
+(
+    ID INT,
+    NAME VARCHAR(20),
+    POSITION VARCHAR(20),
+    SKILL_LEVEL INT NOT NULL,
+    TNAME VARCHAR(20),
+    FROM_DATE DATE,
+    PRIMARY KEY(ID),
+    FOREIGN KEY(TNAME) REFERENCES TEAM(NAME)
+);
+
+INSERT INTO PLAYER VALUES(22 , 'VARUN J' , 'DEFENDER' , 2 , 'RANGERS' , '2001-04-27');
+
++----+-------------------+------------+-------------+---------------+------------+
+| ID | NAME              | POSITION   | SKILL_LEVEL | TNAME         | FROM_DATE  |
++----+-------------------+------------+-------------+---------------+------------+
+|  4 | PUNEET            | DEFENDER   |           7 | BLOWERS       | 2000-01-27 |
+| 10 | BALVIR SINGH      | FORWARD    |           5 | BLOWERS       | 2000-01-12 |
+| 11 | PRITHAM GIRYALKAR | GOALKEEPER |           2 | RANGERS       | 2002-04-09 |
+| 12 | PRANAV            | DEFENDER   |           8 | HITTERS       | 2000-07-30 |
+| 15 | ARUN              | MIDFIELDER |           9 | STARS         | 1999-03-18 |
+| 16 | AMIT              | FORWARD    |          10 | STARS         | 1999-07-04 |
+| 20 | SUHAS             | FORWARD    |          10 | FLYING ELBOWS | 2001-07-10 |
+| 22 | VARUN J           | DEFENDER   |           2 | RANGERS       | 2001-04-27 |
+| 29 | VARUN S           | GOALKEEPER |           8 | FLYING ELBOWS | 2002-08-30 |
++----+-------------------+------------+-------------+---------------+------------+
+
+INJURY RECORD
+
+CREATE TABLE INJURY_RECORD
+(
+	IDATE DATE,
+	SEV_LEVEL VARCHAR(10),
+	DESCRIPTION VARCHAR(10),
+	PID INT,
+	PRIMARY KEY(DESCRIPTION , PID),
+	FOREIGN KEY(PID) REFERENCES PLAYER(ID) ON DELETE CASCADE
+);
+
+GAME
+
+CREATE TABLE GAME
+(
+	HOST_TEAM VARCHAR(10),
+	GUEST_TEAM VARCHAR(10),
+	GDATE DATE NOT NULL,
+	SCORE INT NOT NULL,
+	PRIMARY KEY(HOST_TEAM,GUEST_TEAM), 
+	FOREIGN KEY GAME(HOST_TEAM) REFERENCES TEAM(NAME) ON DELETE SET NULL,
+	FOREIGN KEY GAME(GUEST_TEAM) REFERENCES TEAM(NAME) ON DELETE SET NULL
+);
+
+
+

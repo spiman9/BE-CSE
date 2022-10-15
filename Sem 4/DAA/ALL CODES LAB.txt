@@ -1,0 +1,832 @@
+TERMWORK 1(MERGE)
+
+
+#include<bits/stdc++.h>
+using namespace std;
+#include<time.h>
+#define max 1000
+int A[max] , B[max];
+
+void Merge(int low , int mid , int high)
+{
+    int i = low , j = mid + 1 , k = low;
+    while(i<=mid && j<=high)
+    {
+        if(A[i] <= A[j])
+        {
+            B[k++] = A[i++];
+        }
+        else{
+            B[k++] = A[j++];
+        }
+    }
+    while(i<=mid){
+        B[k++] = A[i++];
+    }
+
+    while(j<=high)
+    {
+        B[k++] = A[j++];
+    }
+
+    for(int i=low;i<=high ;i++)
+        A[i] = B[i];
+}
+
+void mergeSort(int low , int high)
+{
+    if(low < high)
+    {
+        int mid = (low + high)/2;
+        mergeSort(low , mid);
+        mergeSort(mid+1 , high);
+        Merge(low , mid , high);
+    }
+}
+
+
+int main()
+{
+    int n;
+    time_t s , e;
+    cout << "Enter the Number of Elements : ";
+    cin >> n;
+    cout << "Elements are : ";
+    for(int i=0;i<n;i++)
+    {
+        A[i] = rand()%200;
+        cout << A[i] << "\t";
+    }
+
+    cout << endl << endl;
+
+    s= clock();
+    for(int i=0;i<=100000;i++)
+        mergeSort( 0 , n-1);
+    e = clock();
+
+    cout << "Elements after sorting are : ";
+    for(int i=0;i<n;i++)
+    {
+        cout << A[i] << "\t";
+    }
+
+    double cpu_time = (double)(e-s)/CLK_TCK;
+    cout << endl << "Time : " << cpu_time;
+}
+
+
+
+
+
+
+TERMWORK 2 (QUICK SORT)
+
+
+
+
+#include<bits/stdc++.h>
+using namespace std;
+#define max 1000
+int A[max] , B[max];
+
+
+
+void Swap(int *a , int *b)
+{
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+
+int Partition(int low , int high)
+{
+    int pivot = A[low];
+    int i = low-1 , j = high+1;
+    do{
+        do{i++;}while(A[i] < pivot);
+        do{j--;}while(A[j] > pivot);
+        if(i<j)
+            Swap(&A[i] , &A[j]);
+    }while(i<j);
+    Swap(&A[j] , &A[low]);
+    return j;
+}
+
+void QuickSort(int low , int high)
+{
+    if(low < high)
+    {
+        int j = Partition(low , high);
+        QuickSort(low , j-1);
+        QuickSort(j+1 , high);
+    }
+}
+
+int main()
+{
+    int n;
+    time_t s , e;
+    cout << "Enter the Number of Elements : ";
+    cin >> n;
+    cout << "The Elements are : ";
+    for(int i=0;i<n;i++)
+    {
+        A[i] = rand()%100;
+        cout << A[i] << "\t";
+    }
+    cout << endl;
+
+    s = clock();
+    for(int i=0;i<100000;i++)
+        QuickSort(0 , n-1);
+    e = clock();
+
+    cout << "Elements after sorting : ";
+    for(int i=0;i<n;i++)
+    {
+        cout << A[i] <<"\t";
+    }
+    cout << endl;
+
+    double cpu_time = (double)(e-s)/CLK_TCK;
+    cout << "Time : " << cpu_time << endl;
+}
+
+
+
+
+TERMWORK 3(INSERTION SORT)
+
+#include<bits/stdc++.h>
+using namespace std;
+#define max 1000
+#define rep(i , start , end ) for(int i=start;i<=end;i++)
+int A[max];
+void Insertion(int n)
+{
+    for(int i=1;i<n;i++)
+    {
+        int j = i-1;
+        int temp = A[i];
+        while(j>=0 && A[j] > temp)
+        {
+            A[j+1] = A[j];
+            j--;
+        }
+        A[j+1] = temp;
+    }
+}
+
+int main()
+{
+    int n;
+    time_t s , e;
+    cout << "Enter the Number of Elements : ";
+    cin >> n;
+    int i;
+    cout << "Elements are : ";
+    rep(i , 0 , n-1){
+        A[i] = rand()%100;
+        cout << A[i] << "\t";
+    }
+
+
+    s = clock();
+    for(int i=0;i<100000;i++)
+    {
+        Insertion(n);
+    }
+    e=clock();
+
+    
+    cout << "\nElements in sorted order is :   ";
+    rep(i , 0 , n-1)
+    {
+        cout << A[i] << "\t";
+    }
+    double cpu_time = (double)(e-s)/CLK_TCK;
+
+    cout << endl << "Time : " << cpu_time << endl;
+
+}
+
+
+
+TERMWORK 4 (HEAP SORT)
+
+
+#include<bits/stdc++.h>
+using namespace std;
+
+void Swap(int *a , int *b)
+{
+    int  t = *a ;
+    *a = *b;
+    *b = t;
+}
+
+void Heapify(int A[] , int n , int i)
+{
+    int largest = i;
+    int l = 2*i;
+    int r = 2*i+1;
+
+    if(l<=n && A[largest] <= A[l])
+    {
+        largest = l;
+    }
+
+    if(r<=n && A[largest] <= A[r])
+    {
+        largest = r;
+    }
+
+    if(largest != i)
+    {
+        Swap(&A[largest] , &A[i]);
+        Heapify(A , n , largest);
+    }
+}
+
+void HeapSort(int A[] , int n )
+{
+    for(int i=n/2;i>=1;i--)
+    {
+        Heapify(A , n , i);
+    }
+
+    for(int i=n;i>=1;i--)
+    {
+        Swap(&A[1] , &A[i]);
+        Heapify(A , i-1 , 1);
+    }
+}
+
+int main()
+{
+    int n;
+    cout << "Enter the Numebr of elements : ";
+    cin >> n;
+    cout << "Elements are : ";
+    int A[n+1];
+    for(int i=1;i<=n;i++)
+    {
+        A[i] = rand()%100;
+        cout << A[i] << "\t";
+    }
+    time_t s , e;
+
+    s=clock();
+    for(int i=0;i<100000;i++)
+    {
+        HeapSort(A , n);
+    }
+    e = clock();
+
+
+    cout << "\n\nSorted List : ";
+    for(int i=1;i<=n;i++)
+    {
+        cout << A[i] << "\t";
+    }
+
+    double cputime = (double)(e-s)/CLK_TCK;
+    cout << "\n\nTime : " << cputime << endl;
+}
+
+
+
+TERMWORK 5 (DIJIKSTRAS)
+
+
+#include<bits/stdc++.h>
+using namespace std;
+#define inf 999
+
+void Dij(int n , int v , int cost[20][20] , int dist[20])
+{
+    int flag[20] = {0};
+    for(int w = 1 ; w<=n ; w++)
+    {
+        dist[w] = cost[v][w];
+        flag[w] = 0;
+    }
+
+    int count = 1;
+    while(count < n)
+    {
+        int min = inf;
+        int u;
+        for(int w = 1 ; w<=n ;w++)
+        {
+            if(dist[w] < min && flag[w] == 0)
+            {
+                u = w;
+                min = dist[w];
+            }
+        }
+
+        flag[u] = 1;
+        count++;
+        for(int w =1 ; w<=n ; w++)
+        {
+            if((dist[u] + cost[u][w]) < dist[w] && flag[w] == 0)
+            {
+                dist[w] = dist[u] + cost[u][w];
+            }
+        }
+    }
+}
+
+int main()
+{
+    int n;
+    cout << "Enter the Number of Vertices : ";
+    cin >> n;
+    cout << "Enter in the Cost Matrix\n";
+    int dist[20];
+    int cost[20][20];
+
+    for(int i=1;i<=n;i++)
+    {
+        for(int j=1;j<=n;j++)
+        {
+            cin >> cost[i][j];
+            if(cost[i][j] == 0)
+                cost[i][j] = inf;
+        }
+    }
+
+    cout << "Enter the Source : ";
+    int v;
+    cin >> v;
+
+    Dij(n , v , cost , dist);
+
+    cout << "Shortest paths are\n";
+    for(int i=1;i<=n;i++)
+    {
+        if(i!=v)
+        {
+            printf("%d to %d --------> %d\n" , v , i , dist[i]);
+        }
+    }
+}
+
+
+
+
+
+
+TERMWORK 6(PRIMS)
+
+
+#include<bits/stdc++.h>
+using namespace std;
+
+int main()
+{
+    int n , cost[20][20] , ne = 1 , min , mincost=0 , a , b , u , v  , visited[20] = {0};
+    cout << "Enter the Number of Vertices : ";
+    cin >> n;
+    cout << "Enter the costs in cost matrix\n";
+    for(int i=1;i<=n;i++)
+    {
+        for(int j=1;j<=n;j++)
+        {
+            cin >> cost[i][j];
+            if(cost[i][j] == 0)
+            {
+                cost[i][j] = 999;
+            }
+        }
+    }
+    visited[1] = 1;
+
+    while(ne < n)
+    {
+        min = 999;
+        for(int i=1;i<=n;i++)
+        {
+            for(int j=1;j<=n;j++)
+            {
+                if(cost[i][j] < min  && visited[i]!=0)
+                {
+                    min = cost[i][j];
+                    a = i;
+                    b = j;
+                }
+            }
+            
+        }
+
+        if(visited[a] == 0 || visited[b] == 0)
+        {
+            mincost+=cost[a][b];
+            printf("%d Edge : (%d , %d) ----> %d\n" , ne++ , a, b , min);
+            visited[b] = 1;
+        }
+        cost[a][b] = 999;
+        cost[b][a] = 999;
+    }
+    cout << "The Minimum cost is : " << mincost << endl;
+
+    
+}
+
+
+ /* Let us create the following graph
+        2 3
+    (0)--(1)--(2)
+    | / \ |
+    6| 8/ \5 |7
+    | /     \ |
+    (3)-------(4)
+            9         */
+
+// Enter the Number of Vertices : 5
+// Enter the costs in cost matrix
+// 0 2 0 6 0 
+// 2 0 3 8 5
+// 0 3 0 0 7
+// 6 8 0 0 9
+// 0 5 7 9 0
+// 1 Edge : (1 , 2) ----> 2
+// 2 Edge : (2 , 3) ----> 3
+// 3 Edge : (2 , 5) ----> 5
+// 4 Edge : (1 , 4) ----> 6
+// The Minimum cost is : 16
+
+
+
+
+
+
+TERMWORK 7 (FLOYDS)
+
+#include <bits/stdc++.h>
+using namespace std;
+#define rep(i, start, end) for (int i = start; i <= end; i++)
+int ct = 0;
+int min(int a, int b)
+{
+    return a > b ? b : a;
+}
+void printMatrix(int D[][40], int n)
+{
+    int i, j;
+    for(i=1;i<=n;i++)
+    {
+        for(j=1;j<=n;j++)
+        {
+            if(D[i][j] == 99)
+            {
+                cout << "inf" << "\t";
+                continue;
+            }
+            cout << D[i][j] << "\t";
+        }
+        cout << endl;
+    }
+}
+
+void Floyds(int D[][40], int n)
+{
+    
+    for(int k=1;k<=n;k++)
+    {
+        printf("\n\nIntermediate as %d \n", ++ct);
+        printMatrix(D , n);
+        for(int i=1;i<=n;i++)
+        {
+            for(int j=1;j<=n;j++)
+            {
+                D[i][j] = min(D[i][j] , D[i][k] + D[k][j]);
+            }
+        }
+    }
+}
+
+
+int main()
+{
+    int n;
+    cout << "Enter the Number of Nodes : ";
+    cin >> n;
+    cout << "Enter into Adjancy Matrix : \n";
+    int D[40][40];
+    int i,j;
+    for(i=1 ; i<=n ; i++)
+    {
+        for(j=1;j<=n;j++)
+        {
+            cin >> D[i][j];
+        }
+    }
+    Floyds(D , n);
+    cout << "\n\nFinal Cost Matrix is : \n";
+    printMatrix(D , n);
+}
+
+// 0 5 99 10
+// 99 0 3 99
+// 99 99 0 1
+// 99 99 99 0
+
+//        10
+//  (0)------->(3)
+//   |         /|\
+// 5 |          |
+//   |          | 1
+//  \|/         |
+//  (1)------->(2)
+//       3
+
+
+
+TERMWORK 8 (KNAPSACK)
+
+#include<bits/stdc++.h>
+using namespace std;
+
+int V[100][100] , res[100] = {0},ct = 0;
+
+
+int max(int a , int b)
+{
+    return a>b ? a : b;
+}
+int KnapSack(int W , int wt[] , int val[] , int n)
+{
+    for(int i=0;i<=n;i++)
+    {
+        for(int j=0;j<=W;j++)
+        {
+            if( i == 0 || j == 0)
+            {
+                V[i][j] = 0;
+            }
+            else if(wt[i-1] <= j)
+            {
+                V[i][j] = max(V[i-1][j] , val[i-1] + V[i-1][j - wt[i-1]]);
+            }else{
+                V[i][j] = V[i-1][j];
+            }
+        }
+    }
+
+
+    cout << "The n cross W matrix is : \n";
+    for(int i=0;i<=n;i++)
+    {
+        for(int j=0;j<=W;j++)
+        {
+            cout << V[i][j] << "\t";
+        }
+        cout << endl;
+    }
+
+    // For Item Included
+    int i = n , j = W;
+    while(i>0 && j>0)
+    {
+        if(V[i-1][j] != V[i][j])
+        {
+            res[ct++] = i;
+            j = j-wt[i-1];
+        }
+        i--;
+    }
+    return V[n][W];
+}
+
+
+int main()
+{
+    int n;
+    cout << "Enter the Number of elements  : ";
+    cin >> n;
+    int wt[100];
+    cout << "Enter the Weights : ";
+    for(int i=0;i<n;i++)
+    {
+        cin >> wt[i];
+    }
+
+    int val[100];
+    cout << "Enter the Corresponding values of weights : ";
+    for(int i=0;i<n;i++)
+    {
+        cin >>val[i];
+    }
+
+    int W;
+    cout << "Enter the Capacity of Knapsack : ";
+    cin >> W;
+
+    int Optimal = KnapSack(W , wt , val , n );
+    cout << "The Optimal Profit is : " << Optimal << endl;
+
+    cout << "Items Included are : ";
+    for(int i=0;i<ct;i++)
+    {
+        cout << "Item " << res[i] << " of value " << val[res[i] - 1] << endl;
+    }
+}
+
+// Enter the Number of elements  : 4
+// Enter the Weights : 3 4 6 5
+// Enter the Corresponding values of weights : 2 3 1 4
+// Enter the Capacity of Knapsack : 8
+// The n cross W matrix is : 
+// 0       0       0       0       0       0       0       0       0
+// 0       0       0       2       2       2       2       2       2
+// 0       0       0       2       3       3       3       5       5
+// 0       0       0       2       3       3       3       5       5
+// 0       0       0       2       3       4       4       5       6
+// The Optimal Profit is : 6
+// Items Included are : Item 4 of value 4
+// Item 1 of value 2
+
+
+
+
+
+TERMWORK 9 (SUM OF SUBSET)
+
+
+#include<bits/stdc++.h>
+using namespace std;
+#define max 100
+int inc[100] , w[100] , sum , n;
+
+int prom(int i , int wt , int t)
+{
+    return (((wt+t) >= sum) && ((wt == sum) || (wt + w[i+1]<=sum)));
+}
+
+void sumset(int i , int wt , int t)
+{
+    if(prom(i , wt , t))
+    {
+        if(wt == sum)
+        {
+            cout << "{ ";
+            for(int j = 0 ; j<=i ; j++)
+            {
+                if(inc[j] == 1)
+                {
+                    cout << w[j] << " ";
+                }
+            }
+            cout << " }\n" ;
+        }else{
+            inc[i+1] = true;
+            sumset(i+1 , wt + w[i+1] , t-w[i+1]);
+            inc[i+1] = false;
+            sumset(i+1 , wt , t - w[i+1]);
+        }
+    }
+}
+
+int main()
+{
+    cout << "Enter the Number of Elements : ";
+    cin >> n;
+    cout << "Enter the Elements : ";
+    for(int i=0;i<n;i++)
+    {
+        cin >> w[i];
+    }
+    cout << "Enter the Sum : ";
+    cin >> sum;
+    
+    for(int i=0;i<n-1;i++)
+    {
+        for(int j=0;j<n-1-i ;j++)
+        {
+            if(w[j+1] < w[j])
+            {
+                int t = w[j+1];
+                w[j+1] = w[j];
+                w[j] = t;
+            }
+        }
+    }
+
+    int t = 0;
+    for(int i=0;i<n;i++)
+    {
+        t+=w[i];
+        inc[i] = false;
+    }
+    if(t < sum )
+    {
+        cout << "No Solution";
+        return 0;
+    }
+    cout << "Solution[s]\n";
+    sumset(-1 , 0 , t);
+}
+
+
+
+
+
+TERMWORK 10 (NQUEENS)
+
+
+
+#include<bits/stdc++.h>
+using namespace std;
+int ans = 0;
+bool isSafe(int A[][40], int x , int y , int n)
+{
+    for(int row = 0 ; row<=x ;row++)
+    {
+        if(A[row][y] == 1)
+        {
+            return false;
+        }
+    }
+    int row = x;
+    int col = y;
+    while(row>=0 && col>=0)
+    {
+        if(A[row][col] == 1)
+            return false;
+        row--;
+        col--;
+    }
+
+    row = x;
+    col = y;
+    while(row>=0 && col<n)
+    {
+        if(A[row][col] == 1)
+            return false;
+        row--;
+        col++;
+    }
+    return true;
+}
+
+
+bool nQueen(int A[][40] , int x , int n)
+{
+    if(x>=n)
+    {
+        return true;
+    }
+
+    for(int col = 0;col<n;col++)
+    {
+        if(isSafe(A , x  , col , n))
+        {
+            A[x][col] = 1;
+            if(nQueen(A , x+1 , n))
+            {
+                cout << "\n\nSolution  " << (++ans) << endl;
+                for(int i=0;i<n;i++)
+                {
+                    for(int j=0;j<n;j++)
+                    {
+                        if(A[i][j] == 1)
+                        {
+                            cout << "Q\t";
+                        }else{
+                            cout << "*\t";
+                        }
+                    }
+                    cout << endl;
+                }
+            }
+            A[x][col] = 0;
+        }
+    }
+    return false;
+}
+
+int main()
+{
+    int n;
+    cout << "Enter the Number of Queens : ";
+    cin >> n;
+    int A[40][40];
+    for(int i=0;i<n;i++)
+    {
+        for(int j=0;j<n;j++)
+        {
+            A[i][j] = 0 ;
+        }
+    }
+    if(n == 2 || n==3)
+    {
+        cout << "No Solutions";
+        return 0;
+    }
+    nQueen(A , 0 , n);
+
+    cout << "\n\n\nNumber of Solutions are : " << ans << endl;
+}

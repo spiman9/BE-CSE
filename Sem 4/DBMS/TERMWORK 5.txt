@@ -1,0 +1,158 @@
+CREATE TABLE ACTOR
+(
+	ACT_ID INT,
+	ACT_NAME VARCHAR(20),
+	ACT_GENDER VARCHAR(1),
+	PRIMARY KEY(ACT_ID)
+);
+
+INSERT INTO ACTOR VALUES(101,'RAHUL','M');
++--------+----------+------------+
+| ACT_ID | ACT_NAME | ACT_GENDER |
++--------+----------+------------+
+|    101 | RAHUL    | M          |
+|    102 | ANKITHA  | F          |
+|    103 | RADHIKA  | F          |
+|    104 | CHETHAN  | M          |
+|    105 | VIVAN    | M          |
++--------+----------+------------+
+
+CREATE TABLE DIRECTOR
+(
+	DIR_ID INT,
+	DIR_NAME VARCHAR(20),
+	DIR_PHONE INTEGER,
+	PRIMARY KEY(DIR_ID)
+);
+
+INSERT INTO DIRECTOR VALUES(201,'ANUP',9181818);
+
+
+CREATE TABLE MOVIES
+(
+	MOV_ID INT,
+	MOV_TITLE VARCHAR(20),
+	MOV_YEAR DATE,
+	MOV_LANG VARCHAR(20),
+	DIR_ID INT,
+	PRIMARY KEY(MOV_ID),
+	FOREIGN KEY(DIR_ID) REFERENCES DIRECTOR(DIR_ID)
+);
+
+INSERT INTO MOVIES VALUES(1001 , 'RAM LEELA' , 2017 , 'HINDI' , 202);
++--------+-----------+----------+----------+--------+
+| MOV_ID | MOV_TITLE | MOV_YEAR | MOV_LANG | DIR_ID |
++--------+-----------+----------+----------+--------+
+|   1001 | RAM LEELA |     2017 | HINDI    |    202 |
+|   1002 | BLACK     |     2015 | HINDI    |    202 |
+|   1003 | AAVTAR    |     2008 | ENGLISH  |    201 |
+|   1004 | SATYA     |     2011 | HINDI    |    204 |
+|   1005 | STARWAR   |     2012 | ENGLISH  |    205 |
++--------+-----------+----------+----------+--------+
+
+
+CREATE TABLE MOVIE_CAST
+(
+	ACT_ID INT,
+	MOV_ID INT,
+	ROLE VARCHAR(20),
+	PRIMARY KEY(ACT_ID , MOV_ID),
+	FOREIGN KEY(ACT_ID) REFERENCES ACTOR(ACT_ID),
+	FOREIGN KEY(MOV_ID) REFERENCES MOVIES(MOV_ID)
+);
+
+INSERT INTO MOVIE_CAST VALUES(104,1004,'HERO');
++--------+--------+---------+
+| ACT_ID | MOV_ID | ROLE    |
++--------+--------+---------+
+|    101 |   1001 | HERO    |
+|    101 |   1002 | HERO    |
+|    103 |   1002 | GUEST   |
+|    103 |   1003 | HEROINE |
+|    104 |   1004 | HERO    |
++--------+--------+---------+
+
+CREATE TABLE RATING
+(
+	MOV_ID INT,
+	REV_STARS INT,
+	PRIMARY KEY(MOV_ID),
+	FOREIGN KEY(MOV_ID) REFERENCES MOVIES(MOV_ID)
+);
+
+INSERT INTO RATING VALUES(1004,4);
++--------+-----------+
+| MOV_ID | REV_STARS |
++--------+-----------+
+|   1001 |         4 |
+|   1002 |         2 |
+|   1003 |         5 |
+|   1004 |         4 |
+|   1005 |         3 |
++--------+-----------+
+
+
+QUERIES
+
+1.
+SELECT MOV_TITLE
+FROM MOVIES
+WHERE DIR_ID IN (SELECT DIR_ID FROM DIRECTOR WHERE DIR_NAME='SANJAY LEELA BANSALI');
++-----------+
+| MOV_TITLE |
++-----------+
+| RAM LEELA |
+| BLACK     |
++-----------+
+
+2.
+SELECT MOV_TITLE
+FROM MOVIES M , MOVIE_CAST MV
+WHERE M.MOV_ID=MV.MOV_ID AND ACT_ID IN (SELECT ACT_ID
+FROM MOVIE_CAST
+GROUP BY ACT_ID
+HAVING COUNT(ACT_ID)>1)
+GROUP BY MOV_TITLE
+HAVING COUNT(*)>1;
++-----------+
+| MOV_TITLE |
++-----------+
+| BLACK     |
++-----------+
+
+
+3
+SELECT MOV_TITLE ,MAX(REV_STARS)
+FROM MOVIES
+INNER JOIN RATING USING (MOV_ID)
+GROUP BY MOV_TITLE
+HAVING MAX(REV_STARS)>0
+ORDER BY MOV_TITLE;
+
++-----------+----------------+
+| MOV_TITLE | MAX(REV_STARS) |
++-----------+----------------+
+| AAVTAR    |              5 |
+| BLACK     |              2 |
+| RAM LEELA |              4 |
+| SATYA     |              4 |
+| STARWAR   |              3 |
++-----------+----------------+
+
+4
+UPDATE RATING
+SET REV_STARS=5
+WHERE MOV_ID IN (SELECT MOV_ID FROM MOVIES WHERE DIR_ID IN (
+SELECT DIR_ID FROM DIRECTOR WHERE DIR_NAME='RAM GOPAL VERMA'));
+
+mysql> SELECT *
+FROM RATING;
++--------+-----------+
+| MOV_ID | REV_STARS |
++--------+-----------+
+|   1001 |         4 |
+|   1002 |         2 |
+|   1003 |         5 |
+|   1004 |         5 |
+|   1005 |         3 |
++--------+-----------+

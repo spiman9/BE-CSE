@@ -22,7 +22,8 @@ int main()
     char c;
      fd1 = open("t1.txt", O_RDONLY, 0);
      fd2 = open("t1.txt", O_RDONLY, 0);
-  read(fd1, &c, 1);
+    read(fd1, &c, 1);
+    printf("c = %c\n", c);
   read(fd2, &c, 1);
  printf("c = %c\n", c);
 

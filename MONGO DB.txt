@@ -1,0 +1,170 @@
+
+https://docs.google.com/spreadsheets/d/1MGVBJ8HkRbCnU6EQASjJKCqQE8BWng4qgL0n3vCVOxE/edit#gid=0
+
+> show dbs
+admin   0.000GB
+config  0.000GB
+local   0.000GB
+
+> db
+school
+
+table ----> collection
+ db-----> db
+row ---> document
+
+INSERT INTO MONGODB
+> db.createCollection('DemoConnection')
+{ "ok" : 1 }
+
+
+> db.school1.insert({name:"Kendriya Vidhyalaya no 1 Sambra"})
+
+> db.school.insert({_id : 1 , name : "Priyanka Baswani" , address: "Sambra"})
+
+
+> var records = [{empno : 1 , ename: "Suhas"} , {empno:2 , ename:"Amit"}]
+> db.createCollection('Employee')
+{ "ok" : 1 }
+> db.Employee.insert(records)
+
+
+
+
+UPDATE FUNCTION
+> db.Employee.update({empno:3} ,{ $set : {ename : "Praveen"}})
+> db.Employee.update({ename :"Praveen"} , {$set : {ename : "Ye Pagal Hai ky"}} , {multi : true})
+
+
+UPSERT IN MONGO DB
+> db.Employee.update({ename :"Praveen"} , {$set : {ename : "Ye Pagal Hai ky"}} ,{upsert:true})
+
+
+DELETE 
+> db.Employee.remove({"ename":"Ye Pagal Hai ky"})
+WriteResult({ "nRemoved" : 3 })
+
+INSIDE FIND
+> db.Employee.find({empno : 4})
+{ "_id" : ObjectId("62f944d4b01ac333276fb50a"), "empno" : 4, "ename" : "Rohan" }
+> db.Employee.find().limit(2)
+
+SORT
+> db.Employee.find().sort({ename:1}) // ASCENDING ORDER
+> db.Employee.find().sort({ename:-1}) // DESCESDING ORDER
+
+
+
+INSIDE FIND
+> db.Employee.find({age : {$lt : 22}})
+> db.Employee.find({age : {$gt : 21}})
+> db.Employee.find({age : {$gt : 21}})
+
+
+IN PROPERTY
+> db.Employee.find({age : {$in : [24,25]}})
+{ "_id" : ObjectId("62f9e5fcfd028e0b459e94d5"), "name" : "Priyanka", "age" : 24, "Cname" : "Infoses", "Address" : { "city" : "Belgavi", "State" : "Karnataka" }, "yearOfEmployement" : 2021 }
+
+
+
+INDEXING IN DOCUMENTS
+> db.newEmployee.explain("executionStats").find({ename : "Priayanka"})
+
+BY DEFAULT INDEX ON _ID
+> db.newEmployee.getIndexes()
+[ { "v" : 2, "key" : { "_id" : 1 }, "name" : "_id_" } ]
+
+
+CRATE INDEX
+MULTICOLUMN INDEXES
+> db.newEmployee.createIndex({ename : 1})
+{
+        "createdCollectionAutomatically" : false,
+        "numIndexesBefore" : 1,
+        "numIndexesAfter" : 2,
+        "ok" : 1
+}
+
+> db.Emp.dropIndex("eno_1")
+{ "nIndexesWas" : 4, "ok" : 1 }
+
+
+
+AGGREGATE FUNCTIONS
+$project ---> select specific fields
+> db.School.aggregate([{$project : {name : 1 }}])
+{ "_id" : ObjectId("62fba6425f9b8714c765f91c"), "name" : "Pritham" }
+{ "_id" : ObjectId("62fba6425f9b8714c765f91d"), "name" : "Priyanka" }
+{ "_id" : ObjectId("62fba6425f9b8714c765f91e"), "name" : "Aishu" }
+{ "_id" : ObjectId("62fba66f5f9b8714c765f91f"), "name" : "Amit" }
+{ "_id" : ObjectId("62fba66f5f9b8714c765f920"), "name" : "Pooja" }
+
+
+
+$match --> filtering of the operations
+> db.Student.aggregate([{$match : {section :"A"}}])
+{ "_id" : ObjectId("62fa3d914d9012df8137f3f1"), "studentname" : "Priyanka", "section" : "A", "marks" : 40, "subject" : [ "maths", "english" ] }
+{ "_id" : ObjectId("62fa3dc54d9012df8137f3f3"), "studentname" : "suhas", "section" : "A", "marks" : 43, "subject" : [ "evs", "english" ] }
+{ "_id" : ObjectId("62fa3e064d9012df8137f3f6"), "name" : "Rohan", "section" : "A", "marks" : 40, "subject" : [ "evs", "hindi" ] }
+>
+
+$group
+$sort 
+
+
+
+AND
+> db.Student.aggregate([{"$match" : {$and : [{"section" : "A"} , {marks : {"$gt" : 0}} ]}}])
+{ "_id" : ObjectId("62fa3d914d9012df8137f3f1"), "studentname" : "Priyanka", "section" : "A", "marks" : 40, "subject" : [ "maths", "english" ] }
+{ "_id" : ObjectId("62fa3dc54d9012df8137f3f3"), "studentname" : "suhas", "section" : "A", "marks" : 43, "subject" : [ "evs", "english" ] }
+{ "_id" : ObjectId("62fa3e064d9012df8137f3f6"), "name" : "Rohan", "section" : "A", "marks" : 40, "subject" : [ "evs", "hindi" ] }
+>
+
+
+
+
+> db.School.aggregate([{$match : {age : {$gte : 21}}} , {$project : {name : 1}} , {$sort : {name : -1}}])
+{ "_id" : ObjectId("62fba6a05f9b8714c765f922"), "name" : "Sachin" }
+{ "_id" : ObjectId("62fba6425f9b8714c765f91d"), "name" : "Priyanka" }
+{ "_id" : ObjectId("62fba66f5f9b8714c765f920"), "name" : "Pooja" }
+{ "_id" : ObjectId("62fba66f5f9b8714c765f91f"), "name" : "Amit" }
+
+
+
+> db.School.aggregate([{$group : {_id : {age : "$age"}}}])
+{ "_id" : { "age" : 20 } }
+{ "_id" : { "age" : 18 } }
+{ "_id" : { "age" : 21 } }
+{ "_id" : { "age" : 26 } }
+{ "_id" : { "age" : 24 } }
+{ "_id" : { "age" : 19 } }
+
+
+> db.School.aggregate([{$group : {_id : {age : "$age"} ,"TotalNumber" : {$avg : "$age"}}}])
+{ "_id" : { "age" : 20 }, "TotalNumber" : 20 }
+{ "_id" : { "age" : 18 }, "TotalNumber" : 18 }
+{ "_id" : { "age" : 21 }, "TotalNumber" : 21 }
+{ "_id" : { "age" : 26 }, "TotalNumber" : 26 }
+
+
+
+> db.School.aggregate([{$group : {_id : {age : "$age"} , "Total" : {"$sum" : "$age"}}} , {$project : {age : 1 , Total : 1 , yepse : 1}} , {$match : {Total : {$gt : 20}}}])
+{ "_id" : { "age" : 21 }, "Total" : 42 }
+{ "_id" : { "age" : 26 }, "Total" : 26 }
+
+
+
+> db.City.aggregate([{$group : {_id : {r : "$rank"} , "Count" : {"$sum" : "$rank"} , "Avergae" : {$avg : "$rank"}}} , {$sort : {Avergae : -1}} , {$project : {Count : 1 , Avergae : 1}}])
+{ "_id" : { "r" : 5 }, "Count" : 10, "Avergae" : 5 }
+
+
+
+REPLICATION
+mongodb Atlas
+
+MASTER AND SLAVES
+Project--> network access --> Add IP Address
+Databases Access --> Add New Database User
+
+
+

@@ -1,0 +1,28 @@
+show dbs
+
+use interview
+
+use sample // Sample will be the collection name
+
+db.sample.insert({'name' : 'Pritham' , 'roll no' : 99 , 'div' : 'B'})
+
+db.sample.insertMany(
+{
+	'name' : 'suhas',
+	'rollno' : 40,
+	'div' : 'C'
+}, {
+	'name' : 'Shreyas',
+	'rollno' : 50,
+	'div' : 'D'
+}
+)
+
+
+db.sample.update({'name' : 'Pritham'} , {$set : {'name' : 'Prajwal' , 'rollno' : 56}} , {upsert : true})
+
+
+db.sample.drop()
+
+db.sample.remove('name' : 'Pritham')
+

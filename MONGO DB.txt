@@ -10,7 +10,7 @@ local   0.000GB
 school
 
 table ----> collection
- db-----> db
+db-----> db
 row ---> document
 
 INSERT INTO MONGODB
@@ -140,7 +140,10 @@ AND
 { "_id" : { "age" : 19 } }
 
 
-> db.School.aggregate([{$group : {_id : {age : "$age"} ,"TotalNumber" : {$avg : "$age"}}}])
+> db.School.aggregate([{$group : {_id : {age : "$age"} ,"TotalNumber
+
+
+" : {$avg : "$age"}}}])
 { "_id" : { "age" : 20 }, "TotalNumber" : 20 }
 { "_id" : { "age" : 18 }, "TotalNumber" : 18 }
 { "_id" : { "age" : 21 }, "TotalNumber" : 21 }
